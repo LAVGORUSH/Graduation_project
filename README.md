@@ -1,6 +1,8 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/20b4758d66c94212a2369e03f6c2daf6)](https://www.codacy.com/gh/LAVGORUSH/Graduation_project/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=LAVGORUSH/Graduation_project&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.com/LAVGORUSH/Graduation_project.svg?branch=master)](https://travis-ci.com/LAVGORUSH/Graduation_project)
-## Graduation project Topjava
+## Graduation project for Topjava
+
+----
+#### https://javaops.ru/view/topjava
 
 ----
 Realisation REST API using Spring Boot,Spring Data JPA, Spring Security, Hibernate, H2, JUnit5, Lombok, Swagger
