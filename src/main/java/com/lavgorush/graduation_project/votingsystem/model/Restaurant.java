@@ -23,11 +23,11 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class Restaurant extends AbstractNamedEntity {
 
-    @Column(name = "address", nullable = false)
+    @Column(name = "description", nullable = false)
     @NotBlank
     @Size(min = 5, max = 120)
     @SafeHtml(whitelistType = SafeHtml.WhiteListType.NONE)
-    private String address;
+    private String description;
 
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()")
     @NotNull
@@ -45,4 +45,18 @@ public class Restaurant extends AbstractNamedEntity {
     @JsonManagedReference
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Dish> dishes;
+
+    public Restaurant(Integer id, String name, String description, Date registered) {
+        super(id, name);
+        this.description = description;
+        this.registered = registered;
+    }
+
+    public Restaurant(Integer id, String name, String description) {
+        this(id, name, description, new Date());
+    }
+
+    public Restaurant(Restaurant restaurant) {
+        this(restaurant.getId(), restaurant.getName(), restaurant.getDescription(), restaurant.getRegistered());
+    }
 }
