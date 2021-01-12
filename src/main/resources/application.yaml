@@ -14,7 +14,7 @@ spring:
     url: jdbc:h2:mem:voting_system
     username: sa
     password:
-  #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting_system
+  #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
   h2:
     console:
       enabled: true
@@ -35,7 +35,7 @@ spring:
 logging:
   level:
     root: WARN
-    com.lavgorush.graduation_project.voting_system: DEBUG
+    com.lavgorush.graduation_project.voting: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
 
