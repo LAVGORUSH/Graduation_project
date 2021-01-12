@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time" ,"user_id"}, name = "votes_unique_datetime_user_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time", "user_id"}, name = "votes_unique_datetime_user_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"user", "restaurant"})
 public class Vote extends AbstractBaseEntity {
 
-    @Column(name = "date_time", nullable = false)
+    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()")
     @NotNull
     private LocalDateTime dateTimeOfVote;
 

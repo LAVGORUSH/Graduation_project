@@ -14,18 +14,20 @@ VALUES ('Philibert', 'French cuisine'),
        ('Ronny', 'Japanese cuisine');
 
 INSERT INTO dishes (name, price, restaurant_id)
-VALUES ('Onion soup', 410.00,1),
-       ('Salad', 660.00,1),
-       ('Tomato soup', 260.00,2),
-       ('Salad with chicken', 290.00,2),
-       ('Soup with duck', 250.00,3),
-       ('Funchose', 360.00,3),
-       ('Ramen', 350.00,4),
-       ('Sushi', 350.00,4);
+VALUES ('Onion soup', 410.00, 1),
+       ('Salad', 660.00, 1),
+       ('Tomato soup', 260.00, 2),
+       ('Salad with chicken', 290.00, 2),
+       ('Soup with duck', 250.00, 3),
+       ('Funchose', 360.00, 3),
+       ('Ramen', 350.00, 4),
+       ('Sushi', 350.00, 4);
 
 INSERT INTO dish_dates_use (date_use, dish_id)
 VALUES ('2021-01-05', 1),
+       (now(), 1),
        ('2021-01-05', 2),
+       (now(), 2),
        ('2021-01-05', 3),
        ('2021-01-05', 4),
        ('2021-01-05', 5),
@@ -33,6 +35,6 @@ VALUES ('2021-01-05', 1),
        ('2021-01-05', 7),
        ('2021-01-05', 8);
 
-INSERT INTO votes (date_time,user_id, restaurant_id)
+INSERT INTO votes (date_time, user_id, restaurant_id)
 VALUES ('2021-01-05 10:00:00', 1, 1),
        ('2021-01-05 10:00:00', 2, 2);

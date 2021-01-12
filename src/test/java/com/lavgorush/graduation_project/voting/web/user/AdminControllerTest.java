@@ -140,6 +140,7 @@ class AdminControllerTest extends AbstractControllerTest {
         assertFalse(userRepository.getExisted(USER_ID).isEnabled());
     }
 
+
     @Test
     void getWithVotes() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-votes")
