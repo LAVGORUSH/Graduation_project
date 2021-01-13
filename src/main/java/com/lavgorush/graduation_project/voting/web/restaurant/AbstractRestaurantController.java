@@ -50,12 +50,12 @@ public abstract class AbstractRestaurantController {
 
     public List<Dish> getCurrentLunchMenu(int id) {
         log.info("getCurrentLunchMenu for restaurant {}", id);
-        return dishRepository.getMenuAtDate(id, LocalDate.now());
+        return dishRepository.getMenuByDate(id, LocalDate.now());
     }
 
     public List<Dish> getLunchMenuByDate(int id, LocalDate date) {
         log.info("getLunchMenuByDate {} for restaurant {}", date, id);
-        return dishRepository.getMenuAtDate(id, date);
+        return dishRepository.getMenuByDate(id, date);
     }
 
     public ResponseEntity<Dish> getDish(int dish_id, int id) {
