@@ -7,7 +7,6 @@ import com.lavgorush.graduation_project.voting.to.RestaurantTo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -56,8 +55,8 @@ public class RestaurantTestData {
     public static final Dish dish8 = new Dish(DISH8_ID, "Sushi", BigDecimal.valueOf(350.00).setScale(2));
 
     static {
-        restaurant1.setVotes(List.of(new Vote(1, LocalDateTime.parse("2021-01-05T10:00:00"))));
-        restaurant2.setVotes(List.of(new Vote(2, LocalDateTime.parse("2021-01-05T10:00:00"))));
+        restaurant1.setVotes(List.of(new Vote(1, LocalDate.parse("2021-01-05"))));
+        restaurant2.setVotes(List.of(new Vote(2, LocalDate.parse("2021-01-05"))));
         dish1.setDatesOfUse(List.of(LocalDate.parse("2021-01-05"), LocalDate.now()));
         dish2.setDatesOfUse(List.of(LocalDate.parse("2021-01-05"), LocalDate.now()));
         dish3.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));

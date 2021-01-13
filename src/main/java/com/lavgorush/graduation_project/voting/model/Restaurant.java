@@ -37,7 +37,7 @@ public class Restaurant extends AbstractNamedEntity {
     private Date registered = new Date();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
-    @OrderBy("dateTimeOfVote desc")
+    @OrderBy("dateOfVote desc")
     @JsonManagedReference(value = "restaurant_votes")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Vote> votes;

@@ -60,7 +60,7 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail {
     private Set<Role> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OrderBy("dateTimeOfVote DESC")
+    @OrderBy("dateOfVote DESC")
     @JsonManagedReference(value = "user_votes")
     //https://stackoverflow.com/a/44988100/548473
     @OnDelete(action = OnDeleteAction.CASCADE)

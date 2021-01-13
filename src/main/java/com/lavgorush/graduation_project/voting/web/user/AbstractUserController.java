@@ -3,7 +3,6 @@ package com.lavgorush.graduation_project.voting.web.user;
 import com.lavgorush.graduation_project.voting.HasId;
 import com.lavgorush.graduation_project.voting.model.User;
 import com.lavgorush.graduation_project.voting.repository.UserRepository;
-import com.lavgorush.graduation_project.voting.repository.VoteRepository;
 import com.lavgorush.graduation_project.voting.util.UserUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +22,6 @@ public abstract class AbstractUserController {
 
     @Autowired
     protected UserRepository userRepository;
-
-    @Autowired
-    protected VoteRepository voteRepository;
 
     @Autowired
     private UniqueMailValidator emailValidator;

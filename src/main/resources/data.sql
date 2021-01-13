@@ -35,6 +35,6 @@ VALUES ('2021-01-05', 1),
        ('2021-01-05', 7),
        ('2021-01-05', 8);
 
-INSERT INTO votes (date_time, user_id, restaurant_id)
-VALUES ('2021-01-05 10:00:00', 1, 1),
-       ('2021-01-05 10:00:00', 2, 2);
+INSERT INTO votes (date, user_id, restaurant_id)
+VALUES ('2021-01-05', 1, 1),
+       ('2021-01-05', 2, 2);

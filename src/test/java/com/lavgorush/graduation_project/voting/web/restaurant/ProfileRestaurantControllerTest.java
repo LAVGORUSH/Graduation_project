@@ -33,7 +33,7 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant3,restaurant2,restaurant1,restaurant4));
+                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant3, restaurant2, restaurant1, restaurant4));
     }
 
     @Test
@@ -63,7 +63,7 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish1,dish2));
+                .andExpect(DISH_MATCHER.contentJson(dish1, dish2));
     }
 
     @Test
@@ -74,7 +74,7 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish3,dish4));
+                .andExpect(DISH_MATCHER.contentJson(dish3, dish4));
     }
 
     @Test
@@ -86,6 +86,5 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(dish1));
     }
-
 }
 

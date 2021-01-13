@@ -4,7 +4,6 @@ import com.lavgorush.graduation_project.voting.model.Dish;
 import com.lavgorush.graduation_project.voting.model.Restaurant;
 import com.lavgorush.graduation_project.voting.repository.DishRepository;
 import com.lavgorush.graduation_project.voting.repository.RestaurantRepository;
-import com.lavgorush.graduation_project.voting.repository.VoteRepository;
 import com.lavgorush.graduation_project.voting.to.RestaurantTo;
 import com.lavgorush.graduation_project.voting.util.RestaurantUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +23,6 @@ public abstract class AbstractRestaurantController {
 
     @Autowired
     protected DishRepository dishRepository;
-
-    @Autowired
-    protected VoteRepository voteRepository;
 
     public ResponseEntity<Restaurant> get(int id) {
         log.info("get {}", id);

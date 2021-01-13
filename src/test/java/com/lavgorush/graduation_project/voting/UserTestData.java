@@ -5,7 +5,7 @@ import com.lavgorush.graduation_project.voting.model.User;
 import com.lavgorush.graduation_project.voting.model.Vote;
 import com.lavgorush.graduation_project.voting.util.JsonUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +32,8 @@ public class UserTestData {
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
 
     static {
-        user.setVotes(List.of(new Vote(1, LocalDateTime.parse("2021-01-05T10:00:00"))));
-        admin.setVotes(List.of(new Vote(2, LocalDateTime.parse("2021-01-05T10:00:00"))));
+        user.setVotes(List.of(new Vote(1, LocalDate.parse("2021-01-05"))));
+        admin.setVotes(List.of(new Vote(2, LocalDate.parse("2021-01-05"))));
     }
 
     public static User getNew() {

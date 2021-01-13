@@ -6,20 +6,19 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date_time", "user_id"}, name = "votes_unique_datetime_user_idx")})
+@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "user_id"}, name = "votes_unique_datetime_user_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @ToString(callSuper = true, exclude = {"user", "restaurant"})
 public class Vote extends AbstractBaseEntity {
 
-    @Column(name = "date_time", nullable = false, columnDefinition = "timestamp default now()")
+    @Column(name = "date", nullable = false)
     @NotNull
-    private LocalDateTime dateTimeOfVote;
+    private LocalDate dateOfVote;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -32,16 +31,9 @@ public class Vote extends AbstractBaseEntity {
     private Restaurant restaurant;
 
 
-    public Vote(Integer id, LocalDateTime dateTimeOfVote) {
+    public Vote(Integer id, LocalDate dateOfVote) {
         super(id);
-        this.dateTimeOfVote = dateTimeOfVote;
+        this.dateOfVote = dateOfVote;
     }
 
-    public LocalDate getDate() {
-        return dateTimeOfVote.toLocalDate();
-    }
-
-    public LocalTime getTime() {
-        return dateTimeOfVote.toLocalTime();
-    }
 }
