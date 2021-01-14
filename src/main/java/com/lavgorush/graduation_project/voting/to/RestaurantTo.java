@@ -6,6 +6,7 @@ import lombok.Value;
 import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class RestaurantTo extends BaseTo implements HasId, Serializable {
     @SafeHtml(whitelistType = NONE)
     String description;
 
+    @Positive
     int voteCount;
 
     public RestaurantTo(Integer id, String name, String description, int voteCount) {

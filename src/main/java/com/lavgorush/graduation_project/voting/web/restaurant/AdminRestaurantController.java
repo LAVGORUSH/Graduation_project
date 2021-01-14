@@ -2,6 +2,7 @@ package com.lavgorush.graduation_project.voting.web.restaurant;
 
 import com.lavgorush.graduation_project.voting.model.Dish;
 import com.lavgorush.graduation_project.voting.model.Restaurant;
+import com.lavgorush.graduation_project.voting.to.DishTo;
 import com.lavgorush.graduation_project.voting.to.RestaurantTo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -20,8 +21,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.lavgorush.graduation_project.voting.util.ValidationUtil.checkNew;
-import static com.lavgorush.graduation_project.voting.util.ValidationUtil.checkSingleModification;
+import static com.lavgorush.graduation_project.voting.util.ValidationUtil.*;
 
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,17 +54,43 @@ public class AdminRestaurantController extends AbstractRestaurantController {
         return super.getWithVotesCount(id);
     }
 
-    @Override
-    @GetMapping("/{id}/menu")
-    public List<Dish> getCurrentLunchMenu(@PathVariable int id) {
-        return super.getCurrentLunchMenu(id);
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "restaurants", allEntries = true)
+    public void delete(@PathVariable int id) {
+        log.info("delete {}", id);
+        checkSingleModification(restaurantRepository.delete(id), "Restaurant id=" + id + " not found");
     }
 
-    @Override
-    @GetMapping("/{id}/menu/by")
-    public List<Dish> getLunchMenuByDate(@PathVariable int id,
-                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return super.getLunchMenuByDate(id, date);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(cacheNames = "restaurants", allEntries = true)
+    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
+        log.info("create {}", restaurant);
+        checkNew(restaurant);
+        Restaurant created = restaurantRepository.save(restaurant);
+        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path(REST_URL + "/users/{id}")
+                .buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(cacheNames = "restaurants", allEntries = true)
+    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) throws BindException {
+        log.info("update {} with id={}", restaurant, id);
+        assureIdConsistent(restaurant, id);
+        restaurantRepository.save(restaurant);
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    @CacheEvict(cacheNames = "restaurants", allEntries = true)
+    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        Restaurant restaurant = restaurantRepository.getExisted(id);
+        restaurant.setEnabled(enabled);
     }
 
     @Override
@@ -78,32 +104,12 @@ public class AdminRestaurantController extends AbstractRestaurantController {
         return dishRepository.getAllByRestaurantId(id);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "restaurants", allEntries = true)
-    public void delete(@PathVariable int id) {
-        log.info("delete {}", id);
-        checkSingleModification(restaurantRepository.delete(id), "Restaurant id=" + id + " not found");
-    }
-
     @DeleteMapping("/{id}/dishes/{dish_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "restaurants", allEntries = true)
     public void deleteDish(@PathVariable int dish_id, @PathVariable int id) {
         log.info("delete dish {} in the restaurant {}", dish_id, id);
         checkSingleModification(dishRepository.delete(dish_id, id), "In the restaurant with id=" + id + "dish id=" + " not found");
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(cacheNames = "restaurants", allEntries = true)
-    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody Restaurant restaurant) {
-        log.info("create {}", restaurant);
-        checkNew(restaurant);
-        Restaurant created = restaurantRepository.save(restaurant);
-        URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/users/{id}")
-                .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
     @PostMapping(value = "/{id}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -120,31 +126,28 @@ public class AdminRestaurantController extends AbstractRestaurantController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(cacheNames = "restaurants", allEntries = true)
-    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) throws BindException {
-        log.info("update {} with id={}", restaurant, id);
-        restaurantRepository.save(restaurant);
-    }
-
     @PutMapping(value = "/{id}/dishes/{dish_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(cacheNames = "restaurants", allEntries = true)
-    public void updateDish(@RequestBody Dish dish, @PathVariable int id, @PathVariable int dish_id) throws BindException {
+    public void updateDish(@Valid @RequestBody Dish dish, @PathVariable int id, @PathVariable int dish_id) throws BindException {
         log.info("update dish {} with id={} in the restaurant {}", dish, dish_id, id);
         Restaurant found = restaurantRepository.getExisted(id);
         dish.setRestaurant(found);
-        dishRepository.save(dish);
+        assureIdConsistent(dish, dish_id);
+        Dish updated = new Dish(dish);
+        dishRepository.save(updated);
     }
 
-    @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Transactional
-    @CacheEvict(cacheNames = "restaurants", allEntries = true)
-    public void enable(@PathVariable int id, @RequestParam boolean enabled) {
-        log.info(enabled ? "enable {}" : "disable {}", id);
-        Restaurant restaurant = restaurantRepository.getExisted(id);
-        restaurant.setEnabled(enabled);
+    @Override
+    @GetMapping("/{id}/menu")
+    public List<DishTo> getCurrentLunchMenu(@PathVariable int id) {
+        return super.getCurrentLunchMenu(id);
+    }
+
+    @Override
+    @GetMapping("/{id}/menu/by")
+    public List<DishTo> getLunchMenuByDate(@PathVariable int id,
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return super.getLunchMenuByDate(id, date);
     }
 }

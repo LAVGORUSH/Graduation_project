@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static com.lavgorush.graduation_project.voting.RestaurantTestData.*;
 import static com.lavgorush.graduation_project.voting.TestUtil.userHttpBasic;
 import static com.lavgorush.graduation_project.voting.UserTestData.user;
+import static com.lavgorush.graduation_project.voting.util.RestaurantUtil.asDishTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,13 +58,23 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getDish() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + "/dishes/" + DISH1_ID)
+                .with(userHttpBasic(user)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(DISH_TO_MATCHER.contentJson(asDishTo(dish1)));
+    }
+
+    @Test
     void getCurrentLunchMenu() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + "/menu")
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish1, dish2));
+                .andExpect(DISH_TO_MATCHER.contentJson(asDishTo(dish1), asDishTo(dish2)));
     }
 
     @Test
@@ -74,17 +85,7 @@ class ProfileRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish3, dish4));
-    }
-
-    @Test
-    void getDish() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + "/dishes/" + DISH1_ID)
-                .with(userHttpBasic(user)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish1));
+                .andExpect(DISH_TO_MATCHER.contentJson(asDishTo(dish3), asDishTo(dish4)));
     }
 }
 

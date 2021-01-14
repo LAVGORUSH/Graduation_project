@@ -1,7 +1,7 @@
 package com.lavgorush.graduation_project.voting.web.restaurant;
 
-import com.lavgorush.graduation_project.voting.model.Dish;
 import com.lavgorush.graduation_project.voting.model.Restaurant;
+import com.lavgorush.graduation_project.voting.to.DishTo;
 import com.lavgorush.graduation_project.voting.to.RestaurantTo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -45,21 +45,19 @@ public class ProfileRestaurantController extends AbstractRestaurantController {
     }
 
     @Override
+    @GetMapping("/{id}/dishes/{dish_id}")
+    public ResponseEntity<DishTo> getDishTo(@PathVariable int dish_id, @PathVariable int id) {
+        return super.getDishTo(dish_id, id);
+    }
+
     @GetMapping("/{id}/menu")
-    public List<Dish> getCurrentLunchMenu(@PathVariable int id) {
+    public List<DishTo> getCurrentLunchMenu(@PathVariable int id) {
         return super.getCurrentLunchMenu(id);
     }
 
-    @Override
     @GetMapping("/{id}/menu/by")
-    public List<Dish> getLunchMenuByDate(@PathVariable int id,
+    public List<DishTo> getLunchMenuByDate(@PathVariable int id,
                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return super.getLunchMenuByDate(id, date);
-    }
-
-    @Override
-    @GetMapping("/{id}/dishes/{dish_id}")
-    public ResponseEntity<Dish> getDish(@PathVariable int dish_id, @PathVariable int id) {
-        return super.getDish(dish_id, id);
     }
 }

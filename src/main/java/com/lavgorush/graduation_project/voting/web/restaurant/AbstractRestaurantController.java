@@ -4,8 +4,8 @@ import com.lavgorush.graduation_project.voting.model.Dish;
 import com.lavgorush.graduation_project.voting.model.Restaurant;
 import com.lavgorush.graduation_project.voting.repository.DishRepository;
 import com.lavgorush.graduation_project.voting.repository.RestaurantRepository;
+import com.lavgorush.graduation_project.voting.to.DishTo;
 import com.lavgorush.graduation_project.voting.to.RestaurantTo;
-import com.lavgorush.graduation_project.voting.util.RestaurantUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static com.lavgorush.graduation_project.voting.util.RestaurantUtil.*;
 
 @Slf4j
 public abstract class AbstractRestaurantController {
@@ -41,21 +43,27 @@ public abstract class AbstractRestaurantController {
 
     public ResponseEntity<RestaurantTo> getWithVotesCount(int id) {
         log.info("getWithVotesCount {}", id);
-        return ResponseEntity.of(Optional.of(RestaurantUtil.asTo(restaurantRepository.getWithVotes(id).get())));
-    }
-
-    public List<Dish> getCurrentLunchMenu(int id) {
-        log.info("getCurrentLunchMenu for restaurant {}", id);
-        return dishRepository.getMenuByDate(id, LocalDate.now());
-    }
-
-    public List<Dish> getLunchMenuByDate(int id, LocalDate date) {
-        log.info("getLunchMenuByDate {} for restaurant {}", date, id);
-        return dishRepository.getMenuByDate(id, date);
+        return ResponseEntity.of(Optional.of(asTo(restaurantRepository.getWithVotes(id).get())));
     }
 
     public ResponseEntity<Dish> getDish(int dish_id, int id) {
         log.info("getDish {}", id);
         return ResponseEntity.of(dishRepository.getByRestaurantId(dish_id, id));
+    }
+
+    public ResponseEntity<DishTo> getDishTo(int dish_id, int id) {
+        log.info("getDishTo {}", id);
+        DishTo dishTo = asDishTo(dishRepository.getByRestaurantId(dish_id, id).get());
+        return ResponseEntity.of(Optional.of(dishTo));
+    }
+
+    public List<DishTo> getCurrentLunchMenu(int id) {
+        log.info("getCurrentLunchMenu for restaurant {}", id);
+        return asDishToList(dishRepository.getMenuByDate(id, LocalDate.now()));
+    }
+
+    public List<DishTo> getLunchMenuByDate(int id, LocalDate date) {
+        log.info("getLunchMenuByDate {} for restaurant {}", date, id);
+        return asDishToList(dishRepository.getMenuByDate(id, date));
     }
 }

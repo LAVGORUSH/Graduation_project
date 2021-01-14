@@ -20,6 +20,7 @@ import static com.lavgorush.graduation_project.voting.RestaurantTestData.*;
 import static com.lavgorush.graduation_project.voting.TestUtil.readFromJson;
 import static com.lavgorush.graduation_project.voting.TestUtil.userHttpBasic;
 import static com.lavgorush.graduation_project.voting.UserTestData.admin;
+import static com.lavgorush.graduation_project.voting.util.RestaurantUtil.asDishTo;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -74,24 +75,53 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getCurrentLunchMenu() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + "/menu")
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT4_ID)
                 .with(userHttpBasic(admin)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish1, dish2));
+                .andExpect(status().isNoContent());
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.findAll(), List.of(restaurant1, restaurant2, restaurant3));
     }
 
     @Test
-    void getLunchMenuByDate() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT2_ID + "/menu/by")
-                .param("date", "2021-01-05")
-                .with(userHttpBasic(admin)))
-                .andExpect(status().isOk())
+    void createWithLocation() throws Exception {
+        Restaurant newRestaurant = getNew();
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(JsonUtil.writeValue(newRestaurant)))
                 .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(DISH_MATCHER.contentJson(dish3, dish4));
+                .andExpect(status().isCreated());
+
+        Restaurant created = readFromJson(action, Restaurant.class);
+        int newId = created.id();
+        newRestaurant.setId(newId);
+        RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getExisted(newId), newRestaurant);
+    }
+
+    @Test
+    void update() throws Exception {
+        Restaurant updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getExisted(RESTAURANT1_ID), getUpdated());
+    }
+
+    @Test
+    void enable() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + RESTAURANT2_ID)
+                .param("enabled", "false")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertFalse(restaurantRepository.getExisted(RESTAURANT2_ID).isEnabled());
     }
 
     @Test
@@ -115,36 +145,11 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT4_ID)
-                .with(userHttpBasic(admin)))
-                .andExpect(status().isNoContent());
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.findAll(), List.of(restaurant1, restaurant2,restaurant3));
-    }
-
-    @Test
     void deleteDish() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID + "/dishes/" + DISH1_ID)
                 .with(userHttpBasic(admin)))
                 .andExpect(status().isNoContent());
         DISH_MATCHER.assertMatch(dishRepository.getAllByRestaurantId(RESTAURANT1_ID), dish2);
-    }
-
-    @Test
-    void createWithLocation() throws Exception {
-        Restaurant newRestaurant = getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(admin))
-                .content(JsonUtil.writeValue(newRestaurant)))
-                .andDo(print())
-                .andExpect(status().isCreated());
-
-        Restaurant created = readFromJson(action, Restaurant.class);
-        int newId = created.id();
-        newRestaurant.setId(newId);
-        RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getExisted(newId), newRestaurant);
     }
 
     @Test
@@ -165,19 +170,6 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void update() throws Exception {
-        Restaurant updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(admin))
-                .content(JsonUtil.writeValue(updated)))
-                .andDo(print())
-                .andExpect(status().isNoContent());
-
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getExisted(RESTAURANT1_ID), getUpdated());
-    }
-
-    @Test
     void updateDish() throws Exception {
         Dish updated = getUpdatedDish();
         perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID + "/dishes/" + DISH1_ID)
@@ -191,14 +183,23 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void enable() throws Exception {
-        perform(MockMvcRequestBuilders.patch(REST_URL + RESTAURANT2_ID)
-                .param("enabled", "false")
-                .contentType(MediaType.APPLICATION_JSON)
+    void getCurrentLunchMenu() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + "/menu")
                 .with(userHttpBasic(admin)))
+                .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(DISH_TO_MATCHER.contentJson(asDishTo(dish1), asDishTo(dish2)));
+    }
 
-        assertFalse(restaurantRepository.getExisted(RESTAURANT2_ID).isEnabled());
+    @Test
+    void getLunchMenuByDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT2_ID + "/menu/by")
+                .param("date", "2021-01-05")
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(DISH_TO_MATCHER.contentJson(asDishTo(dish3), asDishTo(dish4)));
     }
 }

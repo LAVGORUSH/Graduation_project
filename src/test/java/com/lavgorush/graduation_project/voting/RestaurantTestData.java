@@ -3,9 +3,11 @@ package com.lavgorush.graduation_project.voting;
 import com.lavgorush.graduation_project.voting.model.Dish;
 import com.lavgorush.graduation_project.voting.model.Restaurant;
 import com.lavgorush.graduation_project.voting.model.Vote;
+import com.lavgorush.graduation_project.voting.to.DishTo;
 import com.lavgorush.graduation_project.voting.to.RestaurantTo;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +18,7 @@ public class RestaurantTestData {
     public static final TestMatcher<Restaurant> RESTAURANT_MATCHER = TestMatcher.usingIgnoringFieldsComparator(Restaurant.class, "registered", "votes", "dishes");
     public static final TestMatcher<RestaurantTo> RESTAURANT_TO_MATCHER = TestMatcher.usingIgnoringFieldsComparator(RestaurantTo.class);
     public static final TestMatcher<Dish> DISH_MATCHER = TestMatcher.usingIgnoringFieldsComparator(Dish.class, "restaurant", "datesOfUse");
+    public static final TestMatcher<DishTo> DISH_TO_MATCHER = TestMatcher.usingIgnoringFieldsComparator(DishTo.class);
 
     public static TestMatcher<Restaurant> RESTAURANT_WITH_VOTES_MATCHER =
             TestMatcher.usingAssertions(Restaurant.class,
@@ -84,7 +87,7 @@ public class RestaurantTestData {
     }
 
     public static Dish getNewDish() {
-        return new Dish(null, "New dish", BigDecimal.valueOf(250.00).setScale(2), List.of(LocalDate.now()));
+        return new Dish(null, "New dish", BigDecimal.valueOf(250.00).setScale(2), List.of(LocalDate.now(Clock.systemDefaultZone())));
     }
 
     public static Dish getUpdatedDish() {

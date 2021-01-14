@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "restaurant_id"}, name = "dishes_unique_name_restaurant_idx")})
@@ -40,7 +41,7 @@ public class Dish extends AbstractNamedEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinColumn(name = "dish_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<LocalDate> datesOfUse;
+    private Set<LocalDate> datesOfUse;
 
     public Dish(@NotNull Dish dish) {
         this(dish.getId(), dish.getName(), dish.getPrice(), dish.getDatesOfUse());
@@ -49,14 +50,18 @@ public class Dish extends AbstractNamedEntity {
     public Dish(Integer id, String name, BigDecimal price, Collection<LocalDate> datesOfUse) {
         super(id, name);
         this.price = price;
+        if (!CollectionUtils.isEmpty(this.datesOfUse)) {
+            datesOfUse.addAll(this.datesOfUse);
+        }
         setDatesOfUse(datesOfUse);
     }
 
     public Dish(Integer id, String name, BigDecimal price, LocalDate... datesOfUse) {
         this(id, name, price, List.of(datesOfUse));
+
     }
 
     public void setDatesOfUse(Collection<LocalDate> datesOfUse) {
-        this.datesOfUse = CollectionUtils.isEmpty(datesOfUse) ? Collections.emptyList() : List.copyOf(datesOfUse);
+        this.datesOfUse = CollectionUtils.isEmpty(datesOfUse) ? Collections.emptySet() : Set.copyOf(datesOfUse);
     }
 }

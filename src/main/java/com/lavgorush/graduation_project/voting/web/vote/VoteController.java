@@ -50,15 +50,17 @@ public class VoteController {
             if (dateTimeOfVote.toLocalTime().isBefore(LocalTime.of(11, 0))) {
                 log.info("User id={} change vote for restaurant with id={}", authUser.id(), id);
             } else {
-                throw new IllegalRequestDataException("You can not change after 11:00");
+                throw new IllegalRequestDataException("You can not change vote after 11:00");
             }
         } else {
             log.info("User id={} make new vote for restaurant with id={}", authUser.id(), id);
         }
         Vote created = voteRepository.save(new Vote(dateTimeOfVote.toLocalDate(), user, restaurant));
+
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
+
 }
