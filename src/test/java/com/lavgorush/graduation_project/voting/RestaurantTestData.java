@@ -2,7 +2,6 @@ package com.lavgorush.graduation_project.voting;
 
 import com.lavgorush.graduation_project.voting.model.Dish;
 import com.lavgorush.graduation_project.voting.model.Restaurant;
-import com.lavgorush.graduation_project.voting.model.Vote;
 import com.lavgorush.graduation_project.voting.to.DishTo;
 import com.lavgorush.graduation_project.voting.to.RestaurantTo;
 
@@ -12,6 +11,9 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+import static com.lavgorush.graduation_project.voting.VoteTestData.admin_vote1;
+import static com.lavgorush.graduation_project.voting.VoteTestData.user_vote1;
+import static com.lavgorush.graduation_project.voting.util.DateTimeUtil.DEFAULT_DATE_OF_VOTE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
@@ -57,17 +59,20 @@ public class RestaurantTestData {
     public static final Dish dish7 = new Dish(DISH7_ID, "Ramen", BigDecimal.valueOf(350.00).setScale(2));
     public static final Dish dish8 = new Dish(DISH8_ID, "Sushi", BigDecimal.valueOf(350.00).setScale(2));
 
+
+    public static final LocalDate DATE_OF_FIRST_USE = LocalDate.parse("2021-01-05");
+
     static {
-        restaurant1.setVotes(List.of(new Vote(1, LocalDate.parse("2021-01-05"))));
-        restaurant2.setVotes(List.of(new Vote(2, LocalDate.parse("2021-01-05"))));
-        dish1.setDatesOfUse(List.of(LocalDate.parse("2021-01-05"), LocalDate.now()));
-        dish2.setDatesOfUse(List.of(LocalDate.parse("2021-01-05"), LocalDate.now()));
-        dish3.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));
-        dish4.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));
-        dish5.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));
-        dish6.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));
-        dish7.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));
-        dish8.setDatesOfUse(List.of(LocalDate.parse("2021-01-05")));
+        restaurant1.setVotes(List.of(user_vote1));
+        restaurant2.setVotes(List.of(admin_vote1));
+        dish1.setDatesOfUse(List.of(DATE_OF_FIRST_USE, DEFAULT_DATE_OF_VOTE));
+        dish2.setDatesOfUse(List.of(DATE_OF_FIRST_USE, DEFAULT_DATE_OF_VOTE));
+        dish3.setDatesOfUse(List.of(DATE_OF_FIRST_USE));
+        dish4.setDatesOfUse(List.of(DATE_OF_FIRST_USE));
+        dish5.setDatesOfUse(List.of(DATE_OF_FIRST_USE));
+        dish6.setDatesOfUse(List.of(DATE_OF_FIRST_USE));
+        dish7.setDatesOfUse(List.of(DATE_OF_FIRST_USE));
+        dish8.setDatesOfUse(List.of(DATE_OF_FIRST_USE));
         restaurant1.setDishes(List.of(dish1, dish2));
         restaurant2.setDishes(List.of(dish3, dish4));
         restaurant3.setDishes(List.of(dish5, dish6));

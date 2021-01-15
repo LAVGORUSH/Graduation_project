@@ -23,9 +23,13 @@ Build a voting system for deciding where to have lunch.
 
 Each restaurant provides a new menu each day.
 
-As a result, provide a link to github repository. It should contain the code, README.md with API documentation and couple curl commands to test it.
+-----------------------------
+Technology stack:
+
+Spring Boot; Spring data; Spring security; JPA(Hibernate); H2; Lombok; Maven; Git; Junit 5; Swagger, Java 15.
 
 -----------------------------
-P.S.: Make sure everything works with latest version that is on github :)
+For testing REST API you can use:
+- **Swagger after deploy - http://localhost:8080/swagger-ui/**
 
-P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
+*Use credentials for user{log:user@yandex.ru; pas:password},for admin{log:admin@gmail.com; pas:admin}*

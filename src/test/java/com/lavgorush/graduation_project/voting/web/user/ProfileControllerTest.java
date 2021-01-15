@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ProfileControllerTest extends AbstractControllerTest {
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Test
     void get() throws Exception {

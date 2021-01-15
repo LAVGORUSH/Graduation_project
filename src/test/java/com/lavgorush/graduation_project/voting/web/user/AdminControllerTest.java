@@ -28,7 +28,7 @@ class AdminControllerTest extends AbstractControllerTest {
     private static final String REST_URL = AdminController.REST_URL + '/';
 
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Test
     void get() throws Exception {
